@@ -1,107 +1,69 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using WDIOU_WEB_API.Models;
+using WDIOU_WEB_API.Services;
 
 namespace WDIOU_WEB_API.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
-        private readonly WDIOUDbContext _context;
+        private readonly UsersService _usersService;
 
-        public UsersController(WDIOUDbContext context)
-        {
-            _context = context;
-        }
+        public UsersController(UsersService usersService) =>
+            _usersService = usersService;
 
-        // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
-        {
-            return await _context.Users.ToListAsync();
-        }
+        public async Task<List<User>> Get() =>
+            await _usersService.GetUsersAsync();
 
-        // GET: api/Users/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        [HttpGet("{id:length(24)}")]
+        public async Task<ActionResult<User>> Get(string id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _usersService.GetUserAsync(id);
 
-            if (user == null)
+            if (user is null)
             {
                 return NotFound();
             }
 
-            return user;
+            return Ok(user);
         }
 
-        // PUT: api/Users/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
-        {
-            if (id != user.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(user).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Users
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<IActionResult> Post(User newUser)
         {
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            await _usersService.CreateUserAsync(newUser);
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            return CreatedAtAction(nameof(Get), new {id = newUser.Id}, newUser);
         }
 
-        // DELETE: api/Users/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        [HttpPut("{id:length(24)}")]
+        public async Task<IActionResult> Update(string id, User updatedUser)
         {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
+            var user = await _usersService.GetUserAsync(id);
+
+            if (user is null)
             {
                 return NotFound();
             }
 
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-
+            await _usersService.UpdateUserAsync(id, updatedUser);
             return NoContent();
         }
 
-        private bool UserExists(int id)
+        [HttpDelete("{id:length(24)}")]
+        public async Task<IActionResult> Delete(string id)
         {
-            return _context.Users.Any(e => e.Id == id);
+            var user = await _usersService.GetUserAsync(id);
+
+            if (user is null)
+            {
+                return NotFound();
+            }
+
+            await _usersService.RemoveUserAsync(id);
+            return NoContent();
         }
     }
 }

@@ -7,6 +7,7 @@ namespace WDIOU_WEB_API.Models
         [BsonId]
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
         public string? Id { get; set; }
+        public string Username { get; set; }
         public string firstName { get; set; }
         public string lastName { get; set; }
         public string email { get; set; }

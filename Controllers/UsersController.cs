@@ -18,10 +18,10 @@ namespace WDIOU_WEB_API.Controllers
         public async Task<List<User>> Get() =>
             await _usersService.GetUsersAsync();
 
-        [HttpGet("{id:length(24)}")]
-        public async Task<ActionResult<User>> Get(string id)
+        [HttpGet("{username:minlength(6)}")]
+        public async Task<ActionResult<User>> Get(string username)
         {
-            var user = await _usersService.GetUserAsync(id);
+            var user = await _usersService.GetUserAsync(username);
 
             if (user is null)
             {
@@ -39,21 +39,21 @@ namespace WDIOU_WEB_API.Controllers
             return CreatedAtAction(nameof(Get), new {id = newUser.Id}, newUser);
         }
 
-        [HttpPut("{id:length(24)}")]
-        public async Task<IActionResult> Update(string id, User updatedUser)
+        [HttpPut("{username:minlength(6)}")]
+        public async Task<IActionResult> Update(string username, User updatedUser)
         {
-            var user = await _usersService.GetUserAsync(id);
+            var user = await _usersService.GetUserAsync(username);
 
             if (user is null)
             {
                 return NotFound();
             }
 
-            await _usersService.UpdateUserAsync(id, updatedUser);
+            await _usersService.UpdateUserAsync(username, updatedUser);
             return NoContent();
         }
 
-        [HttpDelete("{id:length(24)}")]
+        [HttpDelete("{id:minlength(6)}")]
         public async Task<IActionResult> Delete(string id)
         {
             var user = await _usersService.GetUserAsync(id);

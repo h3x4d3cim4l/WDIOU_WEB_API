@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<WDIOUDatabaseSettings>(builder.Configuration.GetSection("WDIOUDatabase"));
 
 builder.Services.AddSingleton<UsersService>();
+builder.Services.AddSingleton<usedEmailsService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

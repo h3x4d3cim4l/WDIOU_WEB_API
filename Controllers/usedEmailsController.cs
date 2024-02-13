@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using WDIOU_WEB_API.Models;
 using WDIOU_WEB_API.Services;
 
@@ -16,11 +17,13 @@ namespace WDIOU_WEB_API.Controllers
         }
 
         [HttpGet]
+        [EnableCors("AllowOrigin")]
         public async Task<List<usedEmail>> Get() =>
             await _usedEmailsService.GetUsedEmails();
 
 
         [HttpGet("{email}")]
+        [EnableCors("AllowOrigin")]
         public async Task<ActionResult<usedEmail>> Get(string email)
         {
             var usedEmail = await _usedEmailsService.GetUsedEmail(email);

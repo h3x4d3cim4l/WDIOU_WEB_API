@@ -9,6 +9,8 @@ builder.Services.Configure<WDIOUDatabaseSettings>(builder.Configuration.GetSecti
 
 builder.Services.AddSingleton<UsersService>();
 builder.Services.AddSingleton<usedEmailsService>();
+builder.Services.AddSingleton<PersonService>();
+builder.Services.AddSingleton<DebtService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

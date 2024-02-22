@@ -12,6 +12,8 @@ namespace WDIOU_WEB_API.Models
         public string sign { get; set; }
         public string owner_nickname { get; set; }
         public string person_nickname { get; set; }
+        public string add_date { get; set; }
+        public string due_date { get; set; }
 
     }
 }
